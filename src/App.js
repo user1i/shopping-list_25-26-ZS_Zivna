@@ -1,10 +1,9 @@
-// src/App.js
 import React, { useState } from "react";
 import { Routes, Route, useNavigate, useParams, Navigate } from "react-router-dom";
 import "./App.css";
 import ShoppingListDetailPage from "./ShoppingListDetailPage";
 
-// Základní seznamy – jen přehled (Items/Done/Role)
+// Základní seznamy(Items/Done/Role)
 const INITIAL_LISTS = [
   {
     id: 1,
@@ -93,7 +92,7 @@ function ShoppingListsPage({ lists }) {
   );
 }
 
-// Wrapper pro route s detailem – vytáhne :id z URL a předá ho do detailu
+// Wrapper pro route s detailem
 function ShoppingListDetailRoute({ lists }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -101,7 +100,7 @@ function ShoppingListDetailRoute({ lists }) {
   const numericId = Number(id);
   const list = lists.find((l) => l.id === numericId);
 
-  // Když id neexistuje → přesměruj zpět na přehled
+  // Když id neexistuje -> přesměruje zpět na přehled
   if (!list) {
     return <Navigate to="/" replace />;
   }
@@ -117,7 +116,7 @@ function ShoppingListDetailRoute({ lists }) {
 }
 
 function App() {
-  // Zatím jen stav pro seznamy – připravené na budoucí business logiku
+  // Stav pro seznamy, připravené pro business logiku
   const [lists] = useState(INITIAL_LISTS);
 
   return (
