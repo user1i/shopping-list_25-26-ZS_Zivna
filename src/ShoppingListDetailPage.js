@@ -1,4 +1,3 @@
-// src/ShoppingListDetailPage.js
 import React, { useState } from "react";
 import "./App.css";
 
@@ -8,7 +7,7 @@ const INITIAL_ITEMS = [
   { id: 3, name: "Sušenky", done: true },
 ];
 
-// podle role na listu vrátíme, jestli jsi Owner nebo Member
+// podle role na listu vrátíme, jestli Owner nebo Member
 function getInitialMembers(listRole) {
   if (listRole === "Owner") {
     return [
@@ -18,7 +17,7 @@ function getInitialMembers(listRole) {
     ];
   }
 
-  // varianta, kdy jsi na listu Member
+  // varianta Member
   return [
     { id: 1, name: "Anežka", role: "Owner", isCurrentUser: false },
     { id: 2, name: "You", role: "Member", isCurrentUser: true },
@@ -47,8 +46,6 @@ function ShoppingListDetailPage({ list, onBack }) {
     if (!trimmed) return;
 
     setTitle(trimmed);
-    // Pozn.: název se mění v detailu; pokud ho chceš měnit i v přehledu,
-    // museli bychom LISTS zvednout do useState v App.js.
   };
 
   const handleToggleItemDone = (id) => {
@@ -108,7 +105,7 @@ function ShoppingListDetailPage({ list, onBack }) {
   };
 
   const handleLeave = () => {
-    // jednoduchá varianta: smažeme aktuálního usera a vrátíme se na přehled
+    //smažeme aktuálního usera a vrátíme se na přehled
     setMembers((prev) => prev.filter((m) => !m.isCurrentUser));
     onBack();
   };
@@ -239,7 +236,7 @@ function ShoppingListDetailPage({ list, onBack }) {
         </div>
       </div>
 
-      {/* plusko dole – přidává položku */}
+      {/* přidání položk */}
       <button className="fab" type="button" onClick={handleAddItem}>
         +
       </button>
