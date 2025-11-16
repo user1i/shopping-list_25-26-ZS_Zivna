@@ -79,7 +79,7 @@
   cursor: pointer;
 }
 
-/* FAB – plus vpravo dole */
+/* FAB, plus vpravo dole */
 
 .fab {
   position: fixed;
@@ -114,9 +114,8 @@
   }
 }
 
-/* ===================================== */
-/* DETAIL PAGE – layout podle wireframu  */
-/* ===================================== */
+
+/* DETAIL PAGE  */
 
 .detail-page {
   text-align: left;
@@ -206,7 +205,7 @@
   margin-right: 8px;
 }
 
-/* Responzivita detailu – na mobilu pod sebe */
+/* Responzivita detailu i na mobilu pod sebe */
 
 @media (max-width: 768px) {
   .detail-columns {
