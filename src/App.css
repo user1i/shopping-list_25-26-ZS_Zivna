@@ -10,10 +10,7 @@
 /* HEADER */
 
 .app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
 }
 
 .app-title {
@@ -22,20 +19,52 @@
   font-weight: 600;
 }
 
+/* toolbar pod názvem */
+
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+/* GENERIC BUTTONS */
+
 .link-button {
   border: none;
+  padding: 4px 8px;
   background: none;
-  padding: 0;
   color: #0d6efd;
   font-size: 14px;
   cursor: pointer;
 }
 
-/* CONTENT */
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.text-button {
+  border: none;
+  padding: 2px 4px;
+  background: none;
+  color: #0d6efd;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
+/* LAYOUT */
 
 .app-content {
+  width: 100%;
+  margin: 0;
   position: relative;
 }
+
+/* GRID OF LISTS */
 
 .lists-grid {
   display: flex;
@@ -46,16 +75,16 @@
 /* CARD */
 
 .list-card {
-  border: 1px solid #e0e0e0;
+  width: 260px;
+  padding: 16px;
   border-radius: 8px;
-  padding: 12px 16px;
-  background-color: #ffffff;
-  min-width: 220px;
-  max-width: 260px;
-  box-sizing: border-box;
+  border: 1px solid #e2e2e2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  background-color: #fafafa;
 }
 
 .list-title {
+  font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -67,57 +96,16 @@
 
 .list-actions {
   margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.text-button {
-  border: none;
-  background: none;
-  padding: 0;
-  margin-right: 8px;
-  font-size: 13px;
-  color: #0d6efd;
-  cursor: pointer;
-}
-
-/* FAB, plus vpravo dole */
-
-.fab {
-  position: fixed;
-  right: 32px;
-  bottom: 32px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: none;
-  background-color: #0d6efd;
-  color: #ffffff;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-}
-
-/* RESPONZIVITA */
-
-@media (max-width: 768px) {
-  .App {
-    padding: 24px;
-  }
-
-  .lists-grid {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .list-card {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-
-/* DETAIL PAGE  */
+/* DETAIL PAGE */
 
 .detail-page {
+  width: 100%;
+  margin: 0;
   text-align: left;
 }
 
@@ -126,63 +114,78 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .detail-title-row {
   display: flex;
-  align-items: baseline;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
 }
 
 .detail-title {
   margin: 0;
   font-size: 24px;
-  font-weight: 600;
 }
 
 .detail-columns {
   display: flex;
   align-items: flex-start;
-  gap: 64px;
+  gap: 48px;
   margin-top: 8px;
 }
 
-.detail-column {
-  font-size: 14px;
-}
+/* COLUMNS */
 
-.detail-items {
+.detail-column {
   flex: 1;
 }
 
 .detail-members {
-  flex: 1;
-  border-left: 1px solid #e0e0e0;
-  padding-left: 32px;
+  border-left: 1px solid #e2e2e2;
+  padding-left: 24px;
+}
+
+/* SECTION HEADERS */
+
+.detail-section-header {
+  margin-bottom: 12px;
 }
 
 .detail-section-title {
   font-weight: 600;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+/* malá verze primary buttonu inline */
+
+.inline-add-button {
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+/* LISTS INSIDE DETAIL */
 
 .detail-items-list,
 .detail-members-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
 }
 
-.detail-item-row {
+.detail-item-row,
+.detail-member-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  padding: 4px 0;
 }
 
 .detail-checkbox {
-  font-family: monospace;
+  width: 22px;
+  text-align: center;
 }
 
 .detail-item-text {
@@ -194,20 +197,22 @@
   color: #555;
 }
 
-.detail-member-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
 .detail-member-text {
-  margin-right: 8px;
+  flex: 0 0 auto;
 }
 
-/* Responzivita detailu i na mobilu pod sebe */
+/* MOBILE RESPONSIVE */
 
 @media (max-width: 768px) {
+  .App {
+    padding: 24px;
+  }
+
+  .lists-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .detail-columns {
     flex-direction: column;
     gap: 24px;
@@ -221,4 +226,73 @@
   .detail-title {
     font-size: 20px;
   }
+}
+
+/* MODAL – společný styl */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #ffffff;
+  padding: 24px 28px;
+  border-radius: 8px;
+  max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.modal-title {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.modal-field input {
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primary-button {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+.secondary-button {
+  border: 1px solid #cccccc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  color: #333333;
 }
