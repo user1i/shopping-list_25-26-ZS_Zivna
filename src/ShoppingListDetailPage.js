@@ -1,152 +1,12 @@
-// src/ShoppingListDetailPage.js
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./App.css";
 
-function ListHeader({ title, isOwner, onBack, onRename }) {
-  return (
-    <div className="detail-header">
-      <button type="button" className="link-button" onClick={onBack}>
-        {"< Back"}
-      </button>
+import ListHeader from "./components/detail/ListHeader";
+import ItemsSection from "./components/detail/ItemsSection";
+import MembersSection from "./components/detail/MembersSection";
+import Modal from "./components/detail/Modal";
 
-      <div className="detail-title-row">
-        <h1 className="detail-title">Shopping List: {title}</h1>
-        {isOwner && (
-          <button
-            type="button"
-            className="link-button"
-            onClick={onRename}
-          >
-            [Rename]
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ItemsSection({
-  visibleItems,
-  showCompleted,
-  onToggleItemDone,
-  onDeleteItem,
-  onToggleShowCompleted,
-  onAddItem,
-}) {
-  return (
-    <div className="detail-column detail-items">
-      <div className="detail-section-header">
-        <div className="detail-section-title">
-          Items
-          <button
-            type="button"
-            className="primary-button inline-add-button"
-            onClick={onAddItem}
-          >
-            + Add item
-          </button>
-        </div>
-      </div>
-
-      <ul className="detail-items-list">
-        {visibleItems.map((item) => (
-          <li key={item.id} className="detail-item-row">
-            <span
-              className="detail-checkbox"
-              onClick={() => onToggleItemDone(item.id)}
-              style={{ cursor: "pointer" }}
-            >
-              [{item.done ? "✓" : " "}]
-            </span>
-            <span
-              className={
-                item.done
-                  ? "detail-item-text detail-item-text-done"
-                  : "detail-item-text"
-              }
-            >
-              {item.name}
-            </span>
-            <button
-              type="button"
-              className="text-button"
-              onClick={() => onDeleteItem(item.id)}
-            >
-              [Delete]
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        type="button"
-        className="link-button"
-        onClick={onToggleShowCompleted}
-      >
-        {showCompleted ? "[Hide completed]" : "[Show completed]"}
-      </button>
-    </div>
-  );
-}
-
-function MembersSection({
-  members,
-  isOwner,
-  onAddMember,
-  onRemoveMember,
-  onLeave,
-}) {
-  return (
-    <div className="detail-column detail-members">
-      <div className="detail-section-header">
-        <div className="detail-section-title">
-          Members (Owner + invited users)
-          {isOwner && (
-            <button
-              type="button"
-              className="primary-button inline-add-button"
-              onClick={onAddMember}
-            >
-              + Add member
-            </button>
-          )}
-        </div>
-      </div>
-
-      <ul className="detail-members-list">
-        {members.map((member) => (
-          <li key={member.id} className="detail-member-row">
-            <span className="detail-member-text">
-              {member.name} ({member.role})
-            </span>
-
-            {isOwner && !member.isCurrentUser && (
-              <button
-                type="button"
-                className="text-button"
-                onClick={() => onRemoveMember(member.id)}
-              >
-                [Remove]
-              </button>
-            )}
-
-            {!isOwner && member.isCurrentUser && (
-              <button
-                type="button"
-                className="text-button"
-                onClick={onLeave}
-              >
-                [Leave]
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function ShoppingListDetailPage({
+export default function ShoppingListDetailPage({
   list,
   onBack,
   onRename,
@@ -154,41 +14,46 @@ function ShoppingListDetailPage({
   onMembersChange,
   onLeave,
 }) {
-  const { title, items, members } = list;
-  const [showCompleted, setShowCompleted] = useState(true);
+  const isOwner = list.role === "Owner";
+
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [renameTitle, setRenameTitle] = useState("");
 
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [newItemName, setNewItemName] = useState("");
 
-  const [isRenameOpen, setIsRenameOpen] = useState(false);
-  const [renameTitle, setRenameTitle] = useState(title);
-
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");
 
-  const currentUser = members.find((m) => m.isCurrentUser);
-  const isOwner = currentUser?.role === "Owner";
+  const items = list.items;
+  const members = list.members;
 
+  const visibleItems = useMemo(() => {
+    return showCompleted ? items : items.filter((item) => !item.done);
+  }, [items, showCompleted]);
+
+  // ---------- Rename ----------
   const openRenameModal = () => {
-    setRenameTitle(title);
+    setRenameTitle(list.title);
     setIsRenameOpen(true);
   };
 
   const closeRenameModal = () => {
     setIsRenameOpen(false);
+    setRenameTitle("");
   };
 
   const handleRenameSubmit = (event) => {
     event.preventDefault();
     const trimmed = renameTitle.trim();
-    if (!trimmed || trimmed === title) {
-      closeRenameModal();
-      return;
-    }
+    if (!trimmed) return;
     onRename(trimmed);
     closeRenameModal();
   };
 
+  // ---------- Items ----------
   const handleToggleItemDone = (id) => {
     const nextItems = items.map((item) =>
       item.id === id ? { ...item, done: !item.done } : item
@@ -222,12 +87,8 @@ function ShoppingListDetailPage({
     closeAddItemModal();
   };
 
-  const handleToggleShowCompleted = () => {
-    setShowCompleted((prev) => !prev);
-  };
-
+  // ---------- Members ----------
   const openAddMemberModal = () => {
-    if (!isOwner) return;
     setNewMemberName("");
     setIsAddMemberOpen(true);
   };
@@ -248,41 +109,22 @@ function ShoppingListDetailPage({
 
     const nextMembers = [
       ...members,
-      {
-        id: nextId,
-        name: trimmed,
-        role: "Member",
-        isCurrentUser: false,
-      },
+      { id: nextId, name: trimmed, role: "Member", isCurrentUser: false },
     ];
+
     onMembersChange(nextMembers);
     closeAddMemberModal();
   };
 
-  const handleRemoveMember = (id) => {
-    const nextMembers = members.filter((m) => m.id !== id);
+  const handleRemoveMember = (memberId) => {
+    const nextMembers = members.filter((m) => m.id !== memberId);
     onMembersChange(nextMembers);
   };
-
-  const handleLeave = () => {
-    const nextMembers = members.filter((m) => !m.isCurrentUser);
-    onMembersChange(nextMembers);
-
-    if (onLeave) {
-      onLeave();
-    } else {
-      onBack();
-    }
-  };
-
-  const visibleItems = items.filter(
-    (item) => showCompleted || !item.done
-  );
 
   return (
     <div className="detail-page">
       <ListHeader
-        title={title}
+        title={list.title}
         isOwner={isOwner}
         onBack={onBack}
         onRename={openRenameModal}
@@ -294,7 +136,7 @@ function ShoppingListDetailPage({
           showCompleted={showCompleted}
           onToggleItemDone={handleToggleItemDone}
           onDeleteItem={handleDeleteItem}
-          onToggleShowCompleted={handleToggleShowCompleted}
+          onToggleShowCompleted={() => setShowCompleted((prev) => !prev)}
           onAddItem={openAddItemModal}
         />
 
@@ -303,109 +145,98 @@ function ShoppingListDetailPage({
           isOwner={isOwner}
           onAddMember={openAddMemberModal}
           onRemoveMember={handleRemoveMember}
-          onLeave={handleLeave}
+          onLeave={onLeave}
         />
       </div>
 
-      {isAddItemOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h2 className="modal-title">Create new item</h2>
-            <form onSubmit={handleAddItemSubmit}>
-              <label className="modal-field">
-                Item name
-                <input
-                  type="text"
-                  value={newItemName}
-                  onChange={(e) => setNewItemName(e.target.value)}
-                  placeholder="e.g. Banány, Máslo..."
-                  autoFocus
-                />
-              </label>
+      {isRenameOpen && (
+        <Modal title="Rename shopping list">
+          <form onSubmit={handleRenameSubmit}>
+            <label className="modal-field">
+              New list name
+              <input
+                type="text"
+                value={renameTitle}
+                onChange={(e) => setRenameTitle(e.target.value)}
+                autoFocus
+              />
+            </label>
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={closeAddItemModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="primary-button">
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={closeRenameModal}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="primary-button">
+                Rename
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
 
-      {isRenameOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h2 className="modal-title">Rename shopping list</h2>
-            <form onSubmit={handleRenameSubmit}>
-              <label className="modal-field">
-                New name
-                <input
-                  type="text"
-                  value={renameTitle}
-                  onChange={(e) => setRenameTitle(e.target.value)}
-                  autoFocus
-                />
-              </label>
+      {isAddItemOpen && (
+        <Modal title="Add item">
+          <form onSubmit={handleAddItemSubmit}>
+            <label className="modal-field">
+              Item name
+              <input
+                type="text"
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                placeholder="e.g. Milk, Bread..."
+                autoFocus
+              />
+            </label>
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={closeRenameModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="primary-button">
-                  Save
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={closeAddItemModal}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="primary-button">
+                Add
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
 
       {isAddMemberOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h2 className="modal-title">Add member</h2>
-            <form onSubmit={handleAddMemberSubmit}>
-              <label className="modal-field">
-                Member name
-                <input
-                  type="text"
-                  value={newMemberName}
-                  onChange={(e) => setNewMemberName(e.target.value)}
-                  placeholder="e.g. Jana..."
-                  autoFocus
-                />
-              </label>
+        <Modal title="Add member">
+          <form onSubmit={handleAddMemberSubmit}>
+            <label className="modal-field">
+              Member name
+              <input
+                type="text"
+                value={newMemberName}
+                onChange={(e) => setNewMemberName(e.target.value)}
+                placeholder="e.g. Petr..."
+                autoFocus
+              />
+            </label>
 
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={closeAddMemberModal}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="primary-button">
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={closeAddMemberModal}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="primary-button">
+                Add
+              </button>
+            </div>
+          </form>
+        </Modal>
       )}
     </div>
   );
 }
-
-export default ShoppingListDetailPage;
